@@ -1,15 +1,76 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
-    <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
-  </head>
-  <body class="mixpanel-platform-body">
-    <h1>Hello, World!</h1>
-    <script>
-      // Run queries and display results here
-    </script>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
+		<script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.js'></script>
+	</head>
+	<body class="mixpanel-platform-body">
+		<h1>Hello, World!</h1>
+		<canvas id="myChart" width="400" height="400"></canvas>
+		
+		
+		
+		<script>
+
+			function randomRGBComponent() {
+				return Math.round(Math.random() * 255);
+			}
+			function randomRGBColor() {
+				return 'rgba(' + randomRGBComponent() + ', ' + randomRGBComponent() + ', ' + randomRGBComponent() + ',1)';
+			}
+
+		// 	MP.api.setCredentials('0d4eaad557622208b4dcdcb1d035aecf')
+				
+			var chartData = {labels: [],datasets: []}
+		
+			MP.api.segment("Viewed report", "tab").done(function(results){
+				var tabData = results.values()
+				for (var tabName in tabData) {
+					
+					var dataSet = {
+						label : tabName,
+						data : [],
+						borderColor : randomRGBColor(),
+						// fill : false,
+						lineTension: 0.1,
+						pointHoverRadius: 50,
+						pointRadius: 1,
+
+					}
+
+					
+					
+
+
+					for (var dayKey in tabData[tabName]) {
+						
+						//populate labels
+						if ($.inArray(dayKey, chartData.labels) == -1) {
+							chartData.labels.push(dayKey)
+						}
+						//populate values
+						dataSet.data.push(tabData[tabName][dayKey])
+
+					}         
+
+					chartData.datasets.push(dataSet)
+
+				}
+
+			console.log(chartData)
+			var ctx = $("#myChart");
+
+			var myLineChart = Chart.Line(ctx, {data: chartData})
+
+			});
+		
+			
+			
+			
+		
+		</script>
+	</body>
 </html>
